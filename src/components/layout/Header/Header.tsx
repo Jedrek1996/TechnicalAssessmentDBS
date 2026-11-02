@@ -5,7 +5,8 @@ import { ThemeToggle } from '../../theme/ThemeToggle'
 const DISABLED_NAV = ['Cards', 'Payments', 'Insights']
 
 interface HeaderProps {
-  initials: string
+  /** Shown in the avatar, e.g. "AC". Omit while the customer is loading. */
+  initials?: string
 }
 
 export function Header({ initials }: HeaderProps) {
@@ -36,13 +37,18 @@ export function Header({ initials }: HeaderProps) {
 
         <div className={styles.controls}>
           <ThemeToggle />
-          <span
-            className={styles.avatar}
-            role="img"
-            aria-label={`Signed in as ${initials}`}
-          >
-            {initials}
-          </span>
+          {initials ? (
+            <span
+              className={styles.avatar}
+              role="img"
+              aria-label={`Signed in as ${initials}`}
+            >
+              {initials}
+            </span>
+          ) : (
+            // Same size as the avatar, so the header doesn't shift when it loads.
+            <span className={styles.avatarPlaceholder} aria-hidden="true" />
+          )}
         </div>
       </div>
     </header>

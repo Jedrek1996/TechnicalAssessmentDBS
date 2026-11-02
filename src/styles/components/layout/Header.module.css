@@ -96,6 +96,14 @@
   width: var(--tap-target);
 }
 
+.avatarPlaceholder {
+  background: var(--skeleton);
+  border-radius: var(--radius-full);
+  display: inline-block;
+  height: var(--tap-target);
+  width: var(--tap-target);
+}
+
 @media (min-width: 640px) {
   .inner {
     grid-template-areas: 'brand segment controls';

@@ -1,0 +1,28 @@
+/* Mobile: one column, 16px margins. 640px: 24px margins. 1024px: main + 300px rail. */
+.layout {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0 auto;
+  max-width: var(--container);
+  padding: var(--space-6) var(--gutter-mobile);
+}
+
+.main {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .layout {
+    padding-inline: var(--gutter);
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
