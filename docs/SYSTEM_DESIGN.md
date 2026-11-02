@@ -7,7 +7,7 @@ Every choice says **picked / gave up / why**.
 | Part | Task | Covers | Status |
 | --- | --- | --- | --- |
 | 0 | Shared foundation | Rendering, state, UI library, folders, data, API, performance, security | n/a |
-| 1 | Dashboard | D1-D8 | in progress (D1, D2, D7 done) |
+| 1 | Dashboard | D1-D8 | dashboard done (D1-D8) |
 | 2 | Transfer flow | T1-T8, validation | to do |
 | 3 | Themes | TH1-TH3 | **built** |
 | 4 | Engineering and tests | E1-E6 | in progress |
@@ -76,9 +76,15 @@ src/
   components/   grouped by category, then one folder per component (<Name>.tsx, .test.tsx, index.ts)
     layout/       Header, ContentLayout                    (built)
     theme/        ThemeToggle, SegmentSwitch               (built)
-    dashboard/    Greeting, DashboardSkeleton (built); BalanceHero, AccountCard, TransactionList, SearchInput, DailyLimit (to come)
+    dashboard/    Dashboard.tsx (props in, lays out the sections; no fetching) beside one folder per part of the page:
+      summary/      Greeting, BalanceHero              (built)
+      accounts/     AccountList, AccountCard, AccountIcon (built)
+      transactions/ TransactionList, TransactionRow    (built)
+      skeleton/     DashboardSkeleton                  (built)
+      limit/        DailyLimit                         (built)
     transfer/     TransferDialog, Stepper, steps, SuccessPanel
-    common/       Button, Skeleton, InlineError (built); EmptyState (to come)
+    common/       Button, Skeleton, InlineError, EmptyState, SearchInput, SectionHeader, SectionHeading,
+                  CollapsibleSection, ExpandToggle, SummaryCard (built)
   constants/    theme.ts (built)
   hooks/        useTheme, useCustomer, useDashboardData (built)
   lib/          format.ts (given)
@@ -86,8 +92,9 @@ src/
   providers/    QueryClient + MUI ThemeProvider
   store/        themeStore (built)
   styles/       index.css, components/ (one CSS module per component, same categories), theme/ (tokens, MUI theme)
-  utils/        storage, theme guards, money, customer (built); later schema helpers
+  utils/        storage, theme guards, money, customer, transactions (built); later schema helpers
   test/, mocks/ (given, not edited except `cleanup()` in test/setup.ts)
+public/favicon/ browser tab and iPhone icons (white M on the Retail blue)
 ```
 Picked **layers** over feature folders: familiar and easy to explain. Gave up having one feature's files together. No `routing/` (one page).
 
@@ -148,43 +155,48 @@ States: loading (skeleton), loaded, request error, no search matches, and a simp
 ## A. Architecture
 
 ```
-<DashboardPage>
+<DashboardPage>                                    (owns the data and the three states)
  |- three queries in parallel: customer, accounts, transactions(8)
- |- pending -> <DashboardSkeleton/>              (same grid and heights as the loaded view)
+ |- pending -> <DashboardSkeleton/>                (same grid and heights as the loaded view)
  |- error   -> <InlineError message="We couldn't load your dashboard." onRetry/>
- '- loaded:
-     <BalanceHero total depositCount onNewTransfer/>
-     <AccountCard account/> x3                    (credit: "Amount due")
-     <TransactionList transactions>
-        |- <SearchInput value count onChange onClear/>
-        |- <TransactionRow/> xN                   (+/- sign, Pending chip)
-        '- <EmptyState "No transactions match your search." onClear/>
-     <DailyLimit limit used/>                     (right rail)
+ '- loaded  -> <Dashboard customer accounts transactions onNewTransfer/>   (props in, no fetching)
+       one grid:  greeting | hero | limit | accounts | transactions
+       <Greeting/>
+       <BalanceHero total depositCount onNewTransfer/>   (animated gradient, New transfer button)
+       <DailyLimit limit used/>      (under the total on phones, beside it on tablets, right column from 1024px)
+       <AccountList accounts/>       -> <CollapsibleSection> -> <AccountCard account/> x3 (icon, name, number, balance; "Amount due")
+       <TransactionList transactions/> -> <CollapsibleSection action={<SearchInput/>}>
+                                            -> <TransactionRow/> xN  |  <EmptyState "No transactions match your search." onClear/>
 ```
 
 | Component | Props | Callbacks |
 | --- | --- | --- |
+| `Dashboard` | `customer`, `accounts`, `transactions` | `onNewTransfer()` |
 | `BalanceHero` | `total`, `depositCount` | `onNewTransfer()` |
+| `DailyLimit` | `limit`, `used` | none |
+| `AccountList` | `accounts` | none |
 | `AccountCard` | `account` | none |
 | `TransactionList` | `transactions` | none (owns the `query` state) |
-| `SearchInput` | `value`, `count` | `onChange(v)`, `onClear()` |
+| `SearchInput` | `value` | `onChange(v)`, `onClear()` |
+| `CollapsibleSection` | `title`, `summary`, `action?`, `children` | none (owns `expanded`) |
 | `InlineError` | `message` | `onRetry()` |
-| `DailyLimit` | `limit`, `used` | none |
 
 **Three queries, not one combined call.** Picked three hooks that fire together (D1). Gave up a single round trip, but each piece caches and refetches on its own, and the API has no combined endpoint.
+
+**Collapsible sections.** Accounts and Recent transactions have a toggle beside the heading (`aria-expanded`, `aria-controls`). Collapsing swaps the content for a summary card so the section is never empty. Gave up: remembering the state across reloads (not needed). Search lives in the header only while expanded, and its text is kept because `TransactionList` owns it, not the collapsible wrapper.
 
 **Client-side search.** Picked filtering the 8 loaded rows. Instant, no request or loading state. Gave up finding older transactions (server `?q=` would). The brief says "filter the list" and the list is 8 rows.
 
 **Retry refetches the failed queries.** The error screen only shows when a query has no data to show and is not already refetching, so a failed background refetch keeps the older data on screen, and pressing Retry returns to the skeleton rather than sitting on the error. Gave up per-section errors, because the brief wants one dashboard-level error.
 
-**One layout for every state.** Loading, error and loaded all render through `ContentLayout` (one column, then main plus a 300 px rail from 1024 px), and the skeleton mirrors the loaded blocks. That is how D1's "layout shouldn't jump" is met; verified in Chrome that the header and main area sit in the same position before and after loading.
+**One grid for every state.** `Dashboard` lays its sections out on one CSS grid with named areas (greeting, hero, limit, accounts, transactions). The daily-limit card is under the total on phones, beside it on tablets (hero and limit share a row and take the same height) and in the right column from 1024 px. The loading skeleton uses the same grid, header, list and row styles, and was measured against the real page at 390, 700, 1000 and 1280 px (every block's position and size matches), which is how D1's "layout shouldn't jump" is met.
 
 ## D. Data model: derived, never stored
 ```ts
 totalAvailable = accounts.filter(a => a.type !== 'credit').reduce((s, a) => s + a.balance, 0)
 depositCount   = accounts.filter(a => a.type !== 'credit').length
 remainingLimit = customer.dailyTransferLimit - customer.transferredToday
-visible        = transactions.filter(t => `${t.description} ${t.category}`.toLowerCase().includes(query.trim().toLowerCase()))
+visible        = transactions.filter(t => t.description or t.category contains the trimmed, lower-cased query)   // checked separately, never joined
 ```
 Floating point: 2-decimal sums can drift (0.1 + 0.2). Round the total to cents. Display always goes through `formatMoney`.
 
@@ -192,7 +204,10 @@ Floating point: 2-decimal sums can drift (0.1 + 0.2). Round the total to cents. 
 - Skeleton reserves exact heights (hero, 3 cards, 8 rows).
 - Error state never shows partial or stale zeros.
 - a11y: search has a label, result count in an `aria-live="polite"` region, the `+`/`-` sign (not only colour) shows direction.
-- Mobile: account cards stack. The fixed bottom CTA respects `env(safe-area-inset-bottom)` and the page has bottom padding so it never hides content.
+- Mobile: one `New transfer` button, fixed to the bottom below 1024 px (respects `env(safe-area-inset-bottom)`, the page has bottom padding so it never hides content) and inside the balance card from 1024 px. One element, so one accessible name and one tab stop.
+- Narrow screens: every single-column grid uses `minmax(0, 1fr)` so a `nowrap` row can't force a minimum page width (a 370 px bug caught in review). `html` and `body` also have `overflow-x: clip` and `overscroll-behavior: none` as a safeguard. Measured at every width from 280 to 520 px.
+- Accounts grid: `repeat(auto-fit, minmax(15rem, 1fr))`, so the icon beside "Everyday Checking" never makes the name wrap (2 columns on tablets, 3 on wide screens).
+- Motion: the balance card's gradient flows and two glows float (tokens only, stops for reduced motion). Worst-case text contrast over the whole animation measured at 5.13:1 (AA is 4.5:1).
 
 ---
 
