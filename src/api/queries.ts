@@ -14,6 +14,7 @@ export const queryKeys = {
   customer: ['customer'] as const,
   accounts: ['accounts'] as const,
   transactions: (limit: number) => ['transactions', { limit }] as const,
+  transactionsAll: ['transactions'] as const,
   payees: ['payees'] as const,
 }
 
