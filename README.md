@@ -1,135 +1,92 @@
-# Meridian Banking — Frontend Take-Home
+# Meridian Banking — Jedrek Koh
 
-Build a small banking app for one customer: a **dashboard** that shows her
-accounts and recent transactions, and a **three-step transfer** that sends money
-to a payee.
+- Deployed: _not deployed yet_
+- Run locally: `npm install && npm run dev` (http://localhost:5173)
 
-You get a working React + TypeScript starter with a mock API already wired in,
-plus design tokens and a wireframe. You don't need a backend, and you don't need
-to invent data.
+A small banking app for one customer (Ava Chen): a dashboard and a three-step transfer. The brief is in [`brief/candidate-brief.md`](brief/candidate-brief.md). This README is updated as the work progresses.
 
-|  |  |
-| --- | --- |
-| **Time** | Submit within **2 weeks** of receiving this. Most people need about **8–12 hours**; you don't need to use the full two weeks. |
-| **AI tools** | Allowed. In the follow-up call you explain your code and change it live, **without AI help**. See [How we assess](#4-how-we-assess). |
-| **Stack** | React 19, TypeScript, Vite, TanStack Query, React Hook Form, Zod, MSW, Vitest (all installed). Node 22. |
+## Status
 
----
+| Area | Requirements | Status |
+| --- | --- | --- |
+| Themes | TH1 light/dark, TH2 Retail/Premium, TH3 accessible | Done |
+| Header | D2 (logo, nav, switch, toggle, avatar) | Partly: greeting still to come |
+| Dashboard | D1, D3-D8 | Not started |
+| Transfer | T1-T8, validation | Not started |
+| Engineering | E1 types, E5 `check` + `build` pass | Passing so far |
+| Tests | E4: the 3 required behaviour tests | Not started (other tests exist, see below) |
+| Deployment | E6 | Not started |
 
-## 1. Get started
-
-1. Open **https://github.com/Harmonice-Mundi/2026-fe-assignment/generate**
-   (or press **Use this template** → **Create a new repository**). Choose your
-   own account as the owner, keep it **Public**, and click **Create
-   repository**.
-2. Clone your copy and run:
-
-   ```bash
-   npm install
-   npm run dev        # http://localhost:5173
-   ```
-
-   You should see **"Mock API: connected"**. That screen is a placeholder;
-   replace it with your app.
-
-3. Read the docs below in order before writing code.
-
-## 2. What to read
-
-| Read | What it gives you |
-| --- | --- |
-| 1. [`brief/candidate-brief.md`](brief/candidate-brief.md) | **The spec.** What to build, what's required vs optional, exact copy. |
-| 2. [`wireframes/wireframe.md`](wireframes/wireframe.md) | Layout of each screen (low fidelity — no visual design). |
-| 3. [`brief/api-contract.md`](brief/api-contract.md) | Endpoints, types, errors, and test hooks. |
-
-Look these up when you need them:
-
-- [`DEPLOYMENT.md`](DEPLOYMENT.md): hosting settings and fixes for common mock-API
-  problems.
-- [`brief/design-tokens.css`](brief/design-tokens.css): colours, spacing and type
-  (already imported).
-- [`mock-api/README.md`](mock-api/README.md): the optional Node mock server.
-
-## 3. What's already in the starter
-
-| Path | What it is |
-| --- | --- |
-| `src/api/client.ts`, `src/api/types.ts` | Typed `apiFetch` helper and the API types. Build your queries on these. |
-| `src/lib/format.ts` | `formatMoney` and `formatShortDate`. Use them so amounts and dates match the brief. |
-| `src/mocks/`, `mock-api/` | The mock API. It runs in the browser, in tests, and in your deployed site. **Don't edit it.** |
-| `src/test/setup.ts` | Test setup. The mock data resets before every test. |
-| `src/App.tsx` | Placeholder screen. Replace it. |
-
-How you structure folders, components and features is **up to you** — that's
-part of what we look at.
+## Commands
 
 ```bash
-npm run dev        # start the app
-npm test           # run tests once (npm run test:watch to keep watching)
-npm run lint       # ESLint
-npm run typecheck  # TypeScript
-npm run check      # lint + typecheck + tests
-npm run build      # production build into dist/
+npm run dev         # start the app
+npm run check       # lint + typecheck + tests
+npm run build       # production build into dist/
 ```
-
-Run `npm run check` and `npm run build` before you submit; both should pass.
-
-## 4. How we assess
-
-1. **We open your deployed app** and run through the flows in the brief.
-2. **We read your code and README.** We look at how you structured the
-   project, the decisions you made, and whether the tests check real behaviour.
-3. **We have a follow-up call with you (about 45 minutes).** You share your
-   screen and:
-   - walk us through the structure and two or three decisions you made;
-   - trace one flow through the code (for example, what happens from
-     `Confirm transfer` until the balance updates);
-   - make **one or two small changes live**, without AI assistance. They are
-     the size of "add a validation rule" or "show one more field". Your
-     normal editor, docs and search are fine.
-
-**On AI:** use whatever tools you like while building. We are not checking
-whether code was AI-generated. We are checking that **you understand all of
-it** and made deliberate choices. If you can't explain a piece of code, it
-counts against you, whoever wrote it. Your README must say what you used AI
-for (see below).
-
-A smaller app you understand well scores better than a bigger one you can't
-explain.
-
-## 5. Submit
-
-1. **Deploy** to Netlify, Vercel or Cloudflare Pages (settings in
-   [`DEPLOYMENT.md`](DEPLOYMENT.md)). The deployed site must work with no local
-   server.
-2. **Replace this README** with your own, using the outline below.
-3. **Reply to the invitation email** with your repo URL and your deployed URL.
-
-### Your README
-
-```md
-# Meridian Banking — <Your Name>
-
-- Deployed: <url>
-- Run locally: `npm install && npm run dev`
 
 ## Project structure
-Folders and what each is responsible for.
+
+Organised by layer, one folder per kind of file. Tests sit next to the code they test.
+
+```
+src/
+  api/          typed fetch helper and API types (from the starter)
+  components/   grouped by category, one folder per component
+    layout/       Header
+    theme/        ThemeToggle, SegmentSwitch
+  constants/    theme storage keys and defaults
+  hooks/        useTheme
+  lib/          formatMoney / formatShortDate (from the starter)
+  store/        themeStore (tiny external store over the <html> attributes)
+  styles/
+    index.css     global base styles (imports the brief's design tokens)
+    components/   one CSS module per component, same categories as components/
+    theme/        typed token palette, MUI theme
+  utils/        storage and type-guard helpers
+  mocks/, test/ mock API and test setup (from the starter, not edited)
+```
+
+Not edited from the starter: `mock-api/` and `src/mocks/`. The only change to `src/test/setup.ts` is adding RTL `cleanup()`, because Vitest has no globals here and renders were leaking between tests.
 
 ## Decisions and trade-offs
-Server state vs UI state, forms and validation, theming, anything you
-chose deliberately, and what you'd change.
+
+**Theme lives on `<html>`, not in React state.** `data-theme` and `data-segment` are set on the root element and the design tokens do the rest, so toggling restyles everything with no re-render. A small inline script in `index.html` applies the stored choice before first paint, so a reload never flashes the wrong theme. A stored choice wins; on a first visit the system setting decides the theme and the segment defaults to Retail. The choice is only saved when the user changes it, so a first-time visitor keeps following their system setting.
+_Trade-off:_ the script repeats the storage keys because it can't import them. A test runs the real script from `index.html` and fails if the keys or defaults drift from `constants/theme.ts`.
+
+**MUI, used only for basic pieces.** MUI will provide the transfer dialog and form inputs (focus trap, `Esc`, focus return, labelled inputs). Layout, cards, the transaction list and the header are plain CSS using the design tokens, as the brief asks for no ready-made dashboard template.
+_Trade-off:_ MUI brings its own colours, which would break "no hard-coded colours". The MUI theme is generated from a typed palette (`styles/theme/tokens.ts`) in which every value is a `var(--token)`. It needs MUI's `cssVariables: { nativeColor: true }` mode; without it MUI throws when it does colour maths on `var(--brand)`. A unit test fails if any MUI palette colour is a hard-coded literal. Four values in components we don't use are listed as known exceptions in that test.
+
+**No global store.** Server data will live in TanStack Query. The only client state is the theme, held in the `<html>` attributes.
 
 ## Loading, empty and error states
-How you handled them, and how to see each one in the deployed app.
+
+_To be filled in with the dashboard and transfer work._
 
 ## Tests
-What they cover and why you picked those cases.
+
+`npm test` currently runs 77 tests:
+
+- **Contrast (60):** parses the real `design-tokens.css` and checks WCAG AA (4.5:1) for 15 text/background pairs the UI uses, in all four theme + segment combinations.
+- **Pre-paint script (6):** runs the actual inline script from `index.html`: first visit follows the system, a stored choice wins, bad values are ignored, blocked storage doesn't break it, and keys match the app code.
+- **ThemeToggle, SegmentSwitch, Header (7):** behaviour through the accessible UI: clicking updates `<html>`, `aria-pressed`, and storage, and the controls start from what the pre-paint script set.
+- **MUI theme (1):** no hard-coded colours in the palette.
+- **Starter (3):** formatters and the mock API connection.
+
+The three tests the brief requires (over-balance sends no request, a transfer updates the dashboard, dashboard error then Retry) come with the dashboard and transfer work.
 
 ## AI use
-Which tools, and what for. Name two or three places where you changed,
-rejected or fixed what the AI produced, and why.
+
+Tool: Claude Code, for planning, writing code and tests, and checking the result in a real browser.
+
+Places I changed or corrected what it produced:
+
+1. **MUI theme.** The first version pointed MUI colours at CSS variables and crashed in the Button (`Unsupported var(--brand) color`). Switching on MUI's CSS-variables mode fixed the crash, but it still left hard-coded defaults and console warnings. Checking in Chrome and listing the palette found those leaks, which led to the `nativeColor` option and the palette test.
+2. **Browser checks found two bugs the tests missed.** The Retail/Premium buttons were 36px tall (the brief needs 44px), and a missing favicon logged a 404 in the console. Both were fixed.
+3. **Folder structure.** It first proposed feature folders. I rejected that and asked for the layer-based layout I use on other projects, which is what the code uses now.
 
 ## Not done / known issues
-What you left out or would do with more time.
-```
+
+- Everything marked "Not started" in the status table.
+- The avatar initials (`AC`) are hard-coded in `App.tsx` until the dashboard loads the customer.
+- `<meta name="theme-color">` in `index.html` is a fixed light colour, so mobile browser chrome doesn't follow dark mode.
