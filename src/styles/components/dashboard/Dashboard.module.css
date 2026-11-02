@@ -1,0 +1,68 @@
+/*
+ * One grid, three layouts. The daily limit sits under the total on phones, beside it
+ * on tablets, and in the right column from 1024px.
+ */
+.grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-areas:
+    'greeting'
+    'hero'
+    'limit'
+    'accounts'
+    'transactions';
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.greeting {
+  grid-area: greeting;
+}
+
+.hero {
+  grid-area: hero;
+}
+
+.limit {
+  grid-area: limit;
+}
+
+.accounts {
+  grid-area: accounts;
+}
+
+.transactions {
+  grid-area: transactions;
+}
+
+.grid > * {
+  min-width: 0;
+}
+
+/* When two cards share a row they take the same height. */
+.hero > *,
+.limit > * {
+  height: 100%;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-areas:
+      'greeting greeting'
+      'hero limit'
+      'accounts accounts'
+      'transactions transactions';
+    grid-template-columns: minmax(0, 1fr) 16rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    align-items: start;
+    grid-template-areas:
+      'greeting limit'
+      'hero limit'
+      'accounts limit'
+      'transactions limit';
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}

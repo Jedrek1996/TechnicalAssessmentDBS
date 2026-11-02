@@ -1,8 +1,11 @@
-import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton'
-import { Greeting } from '../components/dashboard/Greeting'
 import { InlineError } from '../components/common/InlineError'
+import { Dashboard } from '../components/dashboard/Dashboard'
+import { DashboardSkeleton } from '../components/dashboard/skeleton/DashboardSkeleton'
 import { ContentLayout } from '../components/layout/ContentLayout'
 import { useDashboardData } from '../hooks/useDashboardData'
+
+// Opens the transfer dialog once it exists (T1).
+const openTransferDialog = () => {}
 
 export function DashboardPage() {
   const dashboard = useDashboardData()
@@ -12,16 +15,21 @@ export function DashboardPage() {
       return <DashboardSkeleton />
     case 'error':
       return (
-        <ContentLayout
-          main={
-            <InlineError
-              message="We couldn't load your dashboard."
-              onRetry={dashboard.retry}
-            />
-          }
-        />
+        <ContentLayout>
+          <InlineError
+            message="We couldn't load your dashboard."
+            onRetry={dashboard.retry}
+          />
+        </ContentLayout>
       )
     case 'success':
-      return <ContentLayout main={<Greeting firstName={dashboard.customer.firstName} />} />
+      return (
+        <Dashboard
+          customer={dashboard.customer}
+          accounts={dashboard.accounts}
+          transactions={dashboard.transactions}
+          onNewTransfer={openTransferDialog}
+        />
+      )
   }
 }

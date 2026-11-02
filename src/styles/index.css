@@ -1,5 +1,9 @@
 @import '../../brief/design-tokens.css';
 
+:root {
+  --transaction-row-height: 4.75rem;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -10,12 +14,20 @@ body,
   min-height: 100%;
 }
 
+/* The page never scrolls sideways (D8) and doesn't rubber-band past its edges. */
+html,
+body {
+  overflow-x: clip;
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
   line-height: var(--leading-normal);
+  cursor: default;
 }
 
 button,
