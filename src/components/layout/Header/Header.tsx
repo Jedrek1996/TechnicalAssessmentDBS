@@ -13,11 +13,13 @@ export function Header({ initials }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <div className={styles.brand}>
+        <div className={styles.brand} role="img" aria-label="Meridian">
           <span className={styles.logo} aria-hidden="true">
             M
           </span>
-          <span className={styles.name}>Meridian</span>
+          <span className={styles.name} aria-hidden="true">
+            eridian
+          </span>
         </div>
 
         <nav className={styles.nav} aria-label="Primary">

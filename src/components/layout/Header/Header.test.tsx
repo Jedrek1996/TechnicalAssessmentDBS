@@ -6,7 +6,7 @@ describe('Header', () => {
   it('shows the brand, the theme controls and the avatar', () => {
     render(<Header initials="AC" />)
 
-    expect(screen.getByText('Meridian')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Meridian' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Dark mode' })).toBeInTheDocument()
     expect(
       screen.getByRole('group', { name: 'Customer segment' }),
