@@ -6,9 +6,7 @@ import { SectionHeading } from '../SectionHeading'
 
 interface CollapsibleSectionProps {
   title: string
-  /** Shown instead of the content while collapsed. */
   summary: ReactNode
-  /** Shown in the header while expanded only (e.g. search). */
   action?: ReactNode
   children: ReactNode
 }
