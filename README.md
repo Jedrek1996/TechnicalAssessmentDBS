@@ -5,6 +5,8 @@
 
 A small banking app for one customer, Ava Chen: a dashboard of her accounts and recent transactions, and a three-step transfer. The brief is in [`brief/candidate-brief.md`](brief/candidate-brief.md).
 
+📐 Want to know how the app is designed? See [`SYSTEM_DESIGN.md`](SYSTEM_DESIGN.md): requirements, architecture, data, API and optimisations, with the trade-off for each choice.
+
 **⏱️ Try it in two minutes**
 
 1. Reload to see the loading skeleton, then toggle light/dark and Retail/Premium (they survive a reload).
@@ -177,5 +179,5 @@ Places I changed or corrected what it produced:
 ## 📚 More documentation
 
 - [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md): every requirement ID with where it lives and how it was checked.
-- [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md): the design walked through requirements, architecture, data, API and optimisations, with the trade-off for each choice.
+- [`SYSTEM_DESIGN.md`](SYSTEM_DESIGN.md): the design walked through requirements, architecture, data, API and optimisations, with the trade-off for each choice.
 - [`brief/`](brief/) and [`wireframes/`](wireframes/): the original brief, API contract, design tokens and wireframe. [`DEPLOYMENT.md`](DEPLOYMENT.md): hosting settings.
