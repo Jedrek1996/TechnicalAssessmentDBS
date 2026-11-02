@@ -1,6 +1,6 @@
 # Meridian Banking — Jedrek Koh
 
-- Deployed: _not deployed yet_
+- Deployed: https://meridianbankassignmentjed.netlify.app/
 - Run locally: `npm install && npm run dev` (http://localhost:5173). Node 22 (see `.nvmrc`).
 
 A small banking app for one customer, Ava Chen: a dashboard of her accounts and recent transactions, and a three-step transfer. The brief is in [`brief/candidate-brief.md`](brief/candidate-brief.md).
@@ -15,7 +15,7 @@ A small banking app for one customer, Ava Chen: a dashboard of her accounts and 
 
 ## Requirements coverage
 
-Everything in the brief is built except deployment. The full matrix (each requirement ID, where it lives, and how it was checked) is in [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md).
+Everything required in the brief is built and deployed. The full matrix (each requirement ID, where it lives, and how it was checked) is in [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md).
 
 | Area | Requirements | Status |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ Everything in the brief is built except deployment. The full matrix (each requir
 | Themes | TH1-TH3: light/dark, Retail/Premium, accessible | Done |
 | Engineering | E1 types, E2 server data, E3 forms, E5 `check` + `build` | Done |
 | Tests | E4: the three required behaviour tests (plus 185 more) | Done |
-| Deployment | E6 | Not done yet |
+| Deployment | E6: public URL (Netlify), static files with the mock API in the browser | Done |
 | Optional | Daily-limit progress bar | Done. The others (discard prompt, debug menu, balance-hide, third segment, `#transfer` link, end-to-end test, CI) are not built |
 
 ## Commands
@@ -169,7 +169,6 @@ Places I changed or corrected what it produced:
 
 ## Not done / known issues
 
-- Deployment (E6) is not done yet.
 - There is no debug menu to trigger the dashboard error state in the deployed app (optional in the brief); the error state is covered by a test.
 - Closing the dialog while a transfer is sending doesn't cancel it: the request completes and the dashboard still refreshes.
 - The other optional extras are not built: `Discard this transfer?`, a `#transfer` link, an end-to-end test, CI, a balance-hide toggle, a third segment.
