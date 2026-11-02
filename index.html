@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f4f6fa" />
     <title>Meridian Banking</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
-    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/retail/favicon-32x32.png" data-favicon="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/retail/favicon-16x16.png" data-favicon="favicon-16x16.png" />
+    <link rel="icon" href="/favicon/retail/favicon.ico" sizes="any" data-favicon="favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/retail/apple-touch-icon.png" data-favicon="apple-touch-icon.png" />
     <!--
       Runs before first paint so a reload never flashes the wrong theme.
       Stored choice wins; otherwise the system setting (theme) or Retail
@@ -32,6 +32,10 @@
         if (segment !== 'retail' && segment !== 'premium') segment = 'retail'
         document.documentElement.dataset.theme = theme
         document.documentElement.dataset.segment = segment
+        var icons = document.querySelectorAll('link[data-favicon]')
+        for (var i = 0; i < icons.length; i++) {
+          icons[i].href = '/favicon/' + segment + '/' + icons[i].getAttribute('data-favicon')
+        }
       })()
     </script>
   </head>

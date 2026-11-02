@@ -41,8 +41,16 @@ export function setMode(mode: ThemeMode): void {
   emit()
 }
 
+// The tab icon follows the segment (the index.html script does the same before first paint).
+function syncFavicon(segment: Segment): void {
+  document.querySelectorAll<HTMLLinkElement>('link[data-favicon]').forEach((link) => {
+    link.href = `/favicon/${segment}/${link.dataset.favicon}`
+  })
+}
+
 export function setSegment(segment: Segment): void {
   root().dataset.segment = segment
+  syncFavicon(segment)
   persist(SEGMENT_KEY, segment)
   emit()
 }
