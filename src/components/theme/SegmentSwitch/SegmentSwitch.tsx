@@ -12,7 +12,13 @@ export function SegmentSwitch() {
   const { segment, setSegment } = useTheme()
 
   return (
-    <div role="group" aria-label="Customer segment" className={styles.group}>
+    <div
+      role="group"
+      aria-label="Customer segment"
+      className={styles.group}
+      data-active={segment}
+    >
+      <span className={styles.indicator} aria-hidden="true" />
       {OPTIONS.map(({ value, label }) => (
         <button
           key={value}

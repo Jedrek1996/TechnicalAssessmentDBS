@@ -21,3 +21,11 @@
   border-color: var(--brand);
   color: var(--brand);
 }
+
+.toggle svg {
+  transition: transform 400ms var(--ease-out);
+}
+
+.toggle[aria-pressed='true'] svg {
+  transform: rotate(180deg);
+}

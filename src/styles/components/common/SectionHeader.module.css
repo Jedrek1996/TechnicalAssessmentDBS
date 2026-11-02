@@ -14,7 +14,18 @@
 }
 
 .action {
+  animation: appear 220ms var(--ease-out);
   grid-area: action;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .plain {

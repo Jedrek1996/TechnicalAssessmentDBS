@@ -27,6 +27,8 @@ describe('SegmentSwitch', () => {
     expect(premium).toHaveAttribute('aria-pressed', 'true')
     expect(retail).toHaveAttribute('aria-pressed', 'false')
     expect(localStorage.getItem(SEGMENT_KEY)).toBe('premium')
+    // The sliding pill follows the choice.
+    expect(screen.getByRole('group', { name: 'Customer segment' })).toHaveAttribute('data-active', 'premium')
   })
 
   it('picks up the segment the pre-paint script already set', () => {
