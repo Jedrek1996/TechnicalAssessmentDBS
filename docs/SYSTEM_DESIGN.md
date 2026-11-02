@@ -7,7 +7,7 @@ Every choice says **picked / gave up / why**.
 | Part | Task | Covers | Status |
 | --- | --- | --- | --- |
 | 0 | Shared foundation | Rendering, state, UI library, folders, data, API, performance, security | n/a |
-| 1 | Dashboard | D1-D8 | to do |
+| 1 | Dashboard | D1-D8 | in progress (D1, D2, D7 done) |
 | 2 | Transfer flow | T1-T8, validation | to do |
 | 3 | Themes | TH1-TH3 | **built** |
 | 4 | Engineering and tests | E1-E6 | in progress |
@@ -72,21 +72,21 @@ Every choice says **picked / gave up / why**.
 
 ```
 src/
-  api/          client.ts, types.ts (given), queries.ts (keys + hooks), transfers.ts (mutation)
+  api/          client.ts, types.ts (given), queries.ts (keys + query options), transfers.ts (mutation, to come)
   components/   grouped by category, then one folder per component (<Name>.tsx, .test.tsx, index.ts)
-    layout/       Header                                   (built)
+    layout/       Header, ContentLayout                    (built)
     theme/        ThemeToggle, SegmentSwitch               (built)
-    dashboard/    BalanceHero, AccountCard, TransactionList, SearchInput, DailyLimit
+    dashboard/    Greeting, DashboardSkeleton (built); BalanceHero, AccountCard, TransactionList, SearchInput, DailyLimit (to come)
     transfer/     TransferDialog, Stepper, steps, SuccessPanel
-    common/       Button, Skeleton, EmptyState, InlineError
+    common/       Button, Skeleton, InlineError (built); EmptyState (to come)
   constants/    theme.ts (built)
-  hooks/        useTheme (built); later the query hooks
+  hooks/        useTheme, useCustomer, useDashboardData (built)
   lib/          format.ts (given)
-  pages/        DashboardPage
+  pages/        DashboardPage (built)
   providers/    QueryClient + MUI ThemeProvider
   store/        themeStore (built)
   styles/       index.css, components/ (one CSS module per component, same categories), theme/ (tokens, MUI theme)
-  utils/        storage, theme guards (built); later money, schema helpers
+  utils/        storage, theme guards, money, customer (built); later schema helpers
   test/, mocks/ (given, not edited except `cleanup()` in test/setup.ts)
 ```
 Picked **layers** over feature folders: familiar and easy to explain. Gave up having one feature's files together. No `routing/` (one page).
@@ -175,7 +175,9 @@ States: loading (skeleton), loaded, request error, no search matches, and a simp
 
 **Client-side search.** Picked filtering the 8 loaded rows. Instant, no request or loading state. Gave up finding older transactions (server `?q=` would). The brief says "filter the list" and the list is 8 rows.
 
-**Retry refetches all three.** Gave up per-section errors, because the brief wants one dashboard-level error.
+**Retry refetches the failed queries.** The error screen only shows when a query has no data to show and is not already refetching, so a failed background refetch keeps the older data on screen, and pressing Retry returns to the skeleton rather than sitting on the error. Gave up per-section errors, because the brief wants one dashboard-level error.
+
+**One layout for every state.** Loading, error and loaded all render through `ContentLayout` (one column, then main plus a 300 px rail from 1024 px), and the skeleton mirrors the loaded blocks. That is how D1's "layout shouldn't jump" is met; verified in Chrome that the header and main area sit in the same position before and after loading.
 
 ## D. Data model: derived, never stored
 ```ts
