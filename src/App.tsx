@@ -1,39 +1,15 @@
-import { useQuery } from '@tanstack/react-query'
-import { apiFetch } from './api/client'
-import type { Health } from './api/types'
 import { Header } from './components/layout/Header'
+import { useCustomer } from './hooks/useCustomer'
+import { DashboardPage } from './pages/DashboardPage'
+import { customerInitials } from './utils/customer'
 
 export default function App() {
-  const health = useQuery({
-    queryKey: ['health'],
-    queryFn: () => apiFetch<Health>('/api/health'),
-    retry: false,
-  })
-
-  const status = health.isPending
-    ? 'checking…'
-    : health.isError
-      ? 'not connected'
-      : 'connected'
+  const customer = useCustomer()
 
   return (
     <>
-      <Header initials="AC" />
-
-      <div className="starter">
-        <main className="starter-main">
-          <h1>Build the dashboard and transfer flow</h1>
-          <p>
-            Start with <code>README.md</code>, then read{' '}
-            <code>brief/candidate-brief.md</code>. Replace this screen with
-            your app.
-          </p>
-
-          <p className="status" role="status">
-            Mock API: {status}
-          </p>
-        </main>
-      </div>
+      <Header initials={customer.data && customerInitials(customer.data)} />
+      <DashboardPage />
     </>
   )
 }

@@ -1,28 +1,19 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App'
+import { renderWithClient } from './test/render'
 
-function renderApp() {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  })
+describe('App', () => {
+  it('greets the signed-in customer and shows their initials', async () => {
+    renderWithClient(<App />)
 
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>,
-  )
-}
-
-describe('starter', () => {
-  it('reaches the mock API', async () => {
-    renderApp()
-
-    const status = screen.getByRole('status')
-    await waitFor(
-      () => expect(status).toHaveTextContent('Mock API: connected'),
-      { timeout: 3000 },
-    )
+    expect(
+      await screen.findByRole(
+        'heading',
+        { name: 'Good evening, Ava' },
+        { timeout: 3000 },
+      ),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Signed in as AC' })).toBeVisible()
   })
 })
