@@ -16,10 +16,14 @@ export function DailyLimit({ limit, used }: DailyLimitProps) {
     transferredToday: used,
   })
   const usedShare = limit > 0 ? Math.min(used / limit, 1) : 0
+  const percentUsed = Math.round(usedShare * 100)
 
   return (
     <section className={styles.card} aria-labelledby={headingId}>
-      <SectionHeading id={headingId}>Daily limit</SectionHeading>
+      <div className={styles.head}>
+        <SectionHeading id={headingId}>Daily limit</SectionHeading>
+        <span className={styles.used}>{percentUsed}% used</span>
+      </div>
       <p className={styles.remaining}>{formatMoney(remaining)} remaining today</p>
       <div
         className={styles.track}

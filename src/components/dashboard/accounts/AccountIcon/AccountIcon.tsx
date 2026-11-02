@@ -30,7 +30,7 @@ const ICONS: Record<AccountType, React.ReactNode> = {
 // Decorative: the account's name already says what it is.
 export function AccountIcon({ type }: { type: AccountType }) {
   return (
-    <span className={styles.badge} aria-hidden="true">
+    <span className={`${styles.badge} ${styles[type]}`} aria-hidden="true">
       <svg
         viewBox="0 0 24 24"
         width="22"

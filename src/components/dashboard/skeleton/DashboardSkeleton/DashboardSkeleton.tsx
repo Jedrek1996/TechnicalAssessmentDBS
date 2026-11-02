@@ -22,16 +22,19 @@ export function DashboardSkeleton() {
     <ContentLayout>
       <div role="status" aria-label="Loading your dashboard" className={gridStyles.grid}>
         <div className={gridStyles.greeting}>
-          <Skeleton width="60%" height="2rem" />
+          <div className={skeletonStyles.greeting}>
+            <Skeleton width="60%" height="2rem" />
+            <Skeleton width="30%" height="1.3125rem" />
+          </div>
         </div>
         <div className={gridStyles.hero}>
           <div className={skeletonStyles.hero}>
-            <Skeleton height="100%" radius="var(--radius-lg)" />
+            <Skeleton height="auto" radius="var(--radius-lg)" />
           </div>
         </div>
         <div className={gridStyles.limit}>
           <div className={skeletonStyles.limit}>
-            <Skeleton height="100%" radius="var(--radius-lg)" />
+            <Skeleton height="auto" radius="var(--radius-lg)" />
           </div>
         </div>
         <div className={gridStyles.accounts}>
@@ -58,7 +61,10 @@ export function DashboardSkeleton() {
           <div className={listStyles.list}>
             {Array.from({ length: TRANSACTION_ROWS }, (_, index) => (
               <div key={index} className={rowStyles.row}>
-                <Skeleton width="45%" height="1rem" />
+                <Skeleton width="2.5rem" height="2.5rem" radius="var(--radius-full)" />
+                <div className={skeletonStyles.rowText}>
+                  <Skeleton width="45%" height="1rem" />
+                </div>
                 <Skeleton width="5rem" height="1rem" />
               </div>
             ))}

@@ -4,3 +4,14 @@
   line-height: var(--leading-tight);
   margin: 0;
 }
+
+.block {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.date {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin: 0;
+}

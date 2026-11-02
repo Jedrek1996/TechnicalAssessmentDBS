@@ -1,0 +1,1 @@
+export { TransactionIcon } from './TransactionIcon'

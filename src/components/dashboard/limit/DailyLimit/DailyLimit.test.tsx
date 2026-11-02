@@ -9,6 +9,7 @@ describe('DailyLimit', () => {
 
     expect(screen.getByText(`${moneyText(5000)} remaining today`)).toBeVisible()
     expect(screen.getByText('Resets daily. Applies to all transfers.')).toBeVisible()
+    expect(screen.getByText('0% used')).toBeVisible()
     expect(screen.getByRole('progressbar', { name: 'Daily limit used' })).toHaveAttribute(
       'aria-valuenow',
       '0',
@@ -19,6 +20,7 @@ describe('DailyLimit', () => {
     render(<DailyLimit limit={5000} used={1250} />)
 
     expect(screen.getByText(`${moneyText(3750)} remaining today`)).toBeVisible()
+    expect(screen.getByText('25% used')).toBeVisible()
     const bar = screen.getByRole('progressbar', { name: 'Daily limit used' })
     expect(bar).toHaveAttribute('aria-valuenow', '1250')
     expect(bar).toHaveAttribute('aria-valuemax', '5000')

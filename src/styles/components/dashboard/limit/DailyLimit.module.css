@@ -25,10 +25,23 @@
   overflow: hidden;
 }
 
+.head {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.used {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
 .fill {
-  background: var(--brand);
+  background: linear-gradient(90deg, var(--brand), var(--brand-hover));
   border-radius: var(--radius-full);
   height: 100%;
+  transition: width var(--duration-base) var(--ease-out);
 }
 
 .note {

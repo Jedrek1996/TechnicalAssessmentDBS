@@ -1,10 +1,24 @@
 .badge {
   align-items: center;
-  background: var(--brand-soft);
   border-radius: var(--radius-full);
-  color: var(--brand);
   display: inline-flex;
   height: 2.5rem;
   justify-content: center;
   width: 2.5rem;
+}
+
+/* Colour says what the account is: spending, saving, or money owed. */
+.checking {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.savings {
+  background: var(--positive-soft);
+  color: var(--positive);
+}
+
+.credit {
+  background: var(--negative-soft);
+  color: var(--negative);
 }

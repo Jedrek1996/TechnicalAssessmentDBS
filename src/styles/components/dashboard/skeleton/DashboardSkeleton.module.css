@@ -1,11 +1,17 @@
-/* Padding + label + caption + the amount line, which scales with the screen. */
+/*
+ * These two are sized by min-height on a grid container; the grey block inside stretches
+ * to fill it. (height: 100% would collapse to nothing wherever the parent has no fixed height.)
+ * Hero: padding + label + caption + the amount line, which scales with the screen.
+ */
 .hero {
+  display: grid;
   height: 100%;
   min-height: calc(6.625rem + var(--text-display) * 1.15);
 }
 
 /* Heights measured on the real card at each layout. */
 .limit {
+  display: grid;
   height: 100%;
   min-height: 9.6875rem;
 }
@@ -20,4 +26,14 @@
   .limit {
     min-height: 11.375rem;
   }
+}
+
+/* Greeting + date line: the same two lines as the real greeting. */
+.greeting {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.rowText {
+  flex: 1;
 }
