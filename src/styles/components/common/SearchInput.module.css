@@ -1,0 +1,44 @@
+.wrap {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  color: var(--text);
+  font-size: var(--text-base);
+  min-height: var(--tap-target);
+  padding: 0 var(--space-12) 0 var(--space-4);
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--text-subtle);
+}
+
+/* We draw our own clear button; hide the browser's so there aren't two. */
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--text-xl);
+  height: var(--tap-target);
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: var(--tap-target);
+}
+
+@media (min-width: 640px) {
+  .wrap {
+    width: 18rem;
+  }
+}

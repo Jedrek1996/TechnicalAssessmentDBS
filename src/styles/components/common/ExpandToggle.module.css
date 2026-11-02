@@ -1,0 +1,25 @@
+.toggle {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  height: var(--tap-target);
+  justify-content: center;
+  width: var(--tap-target);
+}
+
+.toggle:hover {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+.toggle svg {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.toggle[aria-expanded='false'] svg {
+  transform: rotate(-90deg);
+}
