@@ -1,0 +1,140 @@
+.hero {
+  --hero-mid: color-mix(in oklch, var(--hero-from) 45%, var(--hero-to));
+  align-items: center;
+  /* The gradient is twice the card wide and repeats, so sliding it two card-widths is a seamless loop. */
+  animation: hero-flow 18s linear infinite;
+  background: linear-gradient(
+    100deg,
+    var(--hero-from),
+    var(--hero-mid),
+    var(--hero-to),
+    var(--hero-mid),
+    var(--hero-from)
+  );
+  background-repeat: repeat-x;
+  background-size: 200% 100%;
+  border-radius: var(--radius-lg);
+  color: var(--on-hero);
+  display: flex;
+  gap: var(--space-4);
+  isolation: isolate;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: var(--space-6);
+  position: relative;
+}
+
+/* Two soft glows float behind the content. Kept faint so the text keeps above 4.5:1. */
+.hero::before,
+.hero::after {
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.hero::before {
+  animation: hero-float-a 11s ease-in-out infinite alternate;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--on-hero) 14%, transparent),
+    transparent 68%
+  );
+  height: 15rem;
+  right: -3rem;
+  top: -7rem;
+  width: 15rem;
+}
+
+.hero::after {
+  animation: hero-float-b 14s ease-in-out infinite alternate;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--on-hero) 10%, transparent),
+    transparent 68%
+  );
+  bottom: -8rem;
+  height: 12rem;
+  right: 9rem;
+  width: 12rem;
+}
+
+.hero p {
+  margin: 0;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.amount {
+  font-size: var(--text-display);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  margin-block: var(--space-2) !important;
+}
+
+.caption {
+  font-size: var(--text-sm);
+}
+
+/* Below 1024px the button is fixed to the bottom of the screen; from 1024px it sits in the card. */
+.transfer {
+  bottom: calc(var(--gutter-mobile) + env(safe-area-inset-bottom));
+  box-shadow: var(--shadow-lg);
+  left: var(--gutter-mobile);
+  position: fixed;
+  right: var(--gutter-mobile);
+  z-index: var(--z-header);
+}
+
+@media (min-width: 1024px) {
+  .hero .transfer,
+  .hero .transfer:active:not(:disabled) {
+    background: var(--on-hero);
+    box-shadow: none;
+    color: var(--hero-from);
+    position: static;
+  }
+
+  .hero .transfer:hover:not(:disabled) {
+    background: var(--on-hero);
+    opacity: 0.9;
+  }
+}
+
+@keyframes hero-flow {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes hero-float-a {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+
+  to {
+    transform: translate(-2.5rem, 2rem) scale(1.2);
+  }
+}
+
+@keyframes hero-float-b {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+
+  to {
+    transform: translate(3rem, -1.5rem) scale(0.85);
+  }
+}

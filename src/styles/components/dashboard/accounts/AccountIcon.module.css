@@ -1,0 +1,10 @@
+.badge {
+  align-items: center;
+  background: var(--brand-soft);
+  border-radius: var(--radius-full);
+  color: var(--brand);
+  display: inline-flex;
+  height: 2.5rem;
+  justify-content: center;
+  width: 2.5rem;
+}

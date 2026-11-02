@@ -1,0 +1,66 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  column-gap: var(--space-3);
+  display: grid;
+  grid-template-areas:
+    'icon name'
+    'icon number'
+    'balance balance'
+    'status status';
+  grid-template-columns: auto minmax(0, 1fr);
+  height: 100%;
+  padding: var(--space-5);
+  row-gap: var(--space-1);
+}
+
+.icon {
+  align-self: center;
+  grid-area: icon;
+}
+
+.card p,
+.card h3 {
+  margin: 0;
+}
+
+.name {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  grid-area: name;
+}
+
+.number {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  grid-area: number;
+}
+
+.balance {
+  font-size: var(--text-xl);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-bold);
+  grid-area: balance;
+  margin-top: var(--space-2) !important;
+}
+
+.status,
+.due {
+  font-size: var(--text-sm);
+}
+
+.status {
+  color: var(--text-muted);
+}
+
+.status,
+.due {
+  grid-area: status;
+}
+
+.due {
+  color: var(--negative);
+  font-weight: var(--weight-semibold);
+}

@@ -1,0 +1,15 @@
+.list {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* As many columns as fit, with room for the icon beside the longest name. */
+@media (min-width: 640px) {
+  .list {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+}
