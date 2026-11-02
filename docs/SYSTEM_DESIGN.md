@@ -8,9 +8,9 @@ Every choice says **picked / gave up / why**.
 | --- | --- | --- | --- |
 | 0 | Shared foundation | Rendering, state, UI library, folders, data, API, performance, security | n/a |
 | 1 | Dashboard | D1-D8 | dashboard done (D1-D8) |
-| 2 | Transfer flow | T1-T8, validation | to do |
+| 2 | Transfer flow | T1-T8, validation | **built** |
 | 3 | Themes | TH1-TH3 | **built** |
-| 4 | Engineering and tests | E1-E6 | in progress |
+| 4 | Engineering and tests | E1-E6 | in progress (E6 deploy to do) |
 
 ---
 
@@ -72,24 +72,24 @@ Every choice says **picked / gave up / why**.
 
 ```
 src/
-  api/          client.ts, types.ts (given), queries.ts (keys + query options), transfers.ts (mutation, to come)
+  api/          client.ts, types.ts (given), queries.ts (keys + query options), transfers.ts (toRequest, error mapping, mutation) (built)
   components/   grouped by category, then one folder per component (<Name>.tsx, .test.tsx, index.ts)
     layout/       Header, ContentLayout                    (built)
     theme/        ThemeToggle, SegmentSwitch               (built)
     dashboard/    Dashboard.tsx (props in, lays out the sections; no fetching) beside one folder per part of the page:
       summary/      Greeting, BalanceHero              (built)
       accounts/     AccountList, AccountCard, AccountIcon (built)
-      transactions/ TransactionList, TransactionRow    (built)
+      transactions/ TransactionList, TransactionRow, TransactionIcon (built)
       skeleton/     DashboardSkeleton                  (built)
       limit/        DailyLimit                         (built)
-    transfer/     TransferDialog, Stepper, steps, SuccessPanel
+    transfer/     TransferDialog + TransferFlow, then stepper/ recipient/ amount/ review/ success/   (built)
     common/       Button, Skeleton, InlineError, EmptyState, SearchInput, SectionHeader, SectionHeading,
                   CollapsibleSection, ExpandToggle, SummaryCard (built)
-  constants/    theme.ts (built)
-  hooks/        useTheme, useCustomer, useDashboardData (built)
+  constants/    theme.ts, transfer.ts (built)
+  hooks/        useTheme, useCustomer, useDashboardData, useTransferField (built)
   lib/          format.ts (given)
   pages/        DashboardPage (built)
-  providers/    QueryClient + MUI ThemeProvider
+  providers/    AppProviders: QueryClient + MUI theme + injectFirst (built)
   store/        themeStore (built)
   styles/       index.css, components/ (one CSS module per component, same categories), theme/ (tokens, MUI theme)
   utils/        storage, theme guards, money, customer, transactions (built); later schema helpers
@@ -100,7 +100,7 @@ Picked **layers** over feature folders: familiar and easy to explain. Gave up ha
 
 ## D. Data model
 
-API types in `src/api/types.ts` are given and are the single source (`Customer`, `Account`, `Transaction`, `Payee`, `Transfer`, `ApiErrorBody`...). UI-only types live next to their use (`ThemeMode` in `constants/theme.ts`, `TransferStep` with the dialog).
+API types in `src/api/types.ts` are given and are the single source (`Customer`, `Account`, `Transaction`, `Payee`, `Transfer`, `ApiErrorBody`...). UI-only types live next to their use (`ThemeMode` in `constants/theme.ts`, `TransferStep` in `constants/transfer.ts`).
 
 - **Shape: nested, not normalized.** Small read-only lists, each entity appears once. TanStack Query's cache is the store.
 - **Persistence:** data is in-memory (a refresh resets it, as the brief expects). `localStorage` only for `theme` and `segment`.
@@ -207,11 +207,12 @@ Floating point: 2-decimal sums can drift (0.1 + 0.2). Round the total to cents. 
 - Mobile: one `New transfer` button, fixed to the bottom below 1024 px (respects `env(safe-area-inset-bottom)`, the page has bottom padding so it never hides content) and inside the balance card from 1024 px. One element, so one accessible name and one tab stop.
 - Narrow screens: every single-column grid uses `minmax(0, 1fr)` so a `nowrap` row can't force a minimum page width (a 370 px bug caught in review). `html` and `body` also have `overflow-x: clip` and `overscroll-behavior: none` as a safeguard. Measured at every width from 280 to 520 px.
 - Accounts grid: `repeat(auto-fit, minmax(15rem, 1fr))`, so the icon beside "Everyday Checking" never makes the name wrap (2 columns on tablets, 3 on wide screens).
+- Polish (not required by the brief, tokens only): category and account icons, a date line, a `% used` label and gradient bar on the limit, a brand-colour wash behind the page, a sticky frosted header from 640 px, a staggered fade-in (opacity only: a transform would make the wrapper the containing block of the fixed button), hover and press feedback. Text contrast over the new page background was measured per pixel (worst case 5.73:1).
 - Motion: the balance card's gradient flows and two glows float (tokens only, stops for reduced motion). Worst-case text contrast over the whole animation measured at 5.13:1 (AA is 4.5:1).
 
 ---
 
-# Part 2. Transfer flow (T1-T8, §3.3)
+# Part 2. Transfer flow (T1-T8, §3.3), built
 
 ## R. Requirements
 1. Choose a recipient (saved payee or someone new).
@@ -219,77 +220,79 @@ Floating point: 2-decimal sums can drift (0.1 + 0.2). Round the total to cents. 
 3. Review and confirm.
 4. See success, and see the dashboard update.
 
-States: payee list / no payees / new-recipient fields / field errors; over-balance, over-limit; review idle / sending / API error; success.
+States: payees loading / failed / none / no match; new-recipient fields; field errors; over-balance, over-limit; review idle / sending / API error; success.
 Non-functional: no double-send (money really moves twice), keyboard and screen-reader support (T8), focus handling (T1).
 
 ## A. Architecture
 
 ```
-<TransferDialog open onClose>                 (owns: step, useForm, mutation)
- |- <Stepper step/>
- |- 'recipient' -> <RecipientStep/>   payee radio-group + search + "Send to someone new"
- |- 'amount'    -> <AmountStep/>      from-account select, amount + chips, note counter
- |- 'review'    -> <ReviewStep/>      <ReviewSummary/> + <InlineError role="alert"/>
- '- 'success'   -> <SuccessPanel/>    aria-live
+<DashboardPage>  holds: transferOpen, opener (the button), transferUsed
+ '- <TransferDialog open onClose returnFocusTo customer accounts>      (lazy chunk; MUI Dialog)
+     '- <TransferFlow>   owns: step, the single useForm, the mutation   (lives inside the dialog, so closing resets it)
+         |- <Stepper step/>                         Recipient -> Amount -> Review   (aria-current="step")
+         |- 'recipient' -> <RecipientStep/>         search + one radiogroup: <RecipientOption/> x payees, "Send to someone new"
+         |                                          -> <NewRecipientFields/> when "new" is chosen
+         |- 'amount'    -> <AmountStep accounts remaining/>   from-account, amount + quick buttons, limits, note + counter
+         |- 'review'    -> <ReviewStep accounts sendError/>   <ReviewSummary/> + role="alert"
+         '- 'success'   -> <SuccessPanel transfer/>           aria-live
 ```
 
-| Component | Props | Callbacks |
+| Component | Props | Notes |
 | --- | --- | --- |
-| `TransferDialog` | `open` | `onClose()` |
-| `RecipientStep` | `payees` (via query) | `onContinue()` |
-| `AmountStep` | `accounts`, `remainingLimit` | `onBack()`, `onContinue()` |
-| `ReviewStep` | `values`, `isSending`, `error?` | `onBack()`, `onConfirm()` |
-| `SuccessPanel` | `transfer` | `onDone()` |
+| `TransferDialog` | `open`, `onClose`, `customer`, `accounts`, `returnFocusTo` | MUI Dialog; full-screen below 1024 px |
+| `TransferFlow` | `customer`, `accounts`, `onClose` | form, step, mutation, footer buttons |
+| `RecipientStep` | none (reads the form and `payeesQuery`) | |
+| `AmountStep` | `accounts`, `remaining` | |
+| `ReviewStep` | `accounts`, `sendError?` | |
+| `SuccessPanel` | `transfer` | |
 
-**One `useForm` for all steps, `step` in `useState`.** `Back` and `Continue` only change `step`, so data persists. Gave up a form per step (it would have to be merged and loses data). Per-step validation uses `trigger([...fields])` before advancing.
+**One `useForm` for all steps, `step` in `useState`.** `Back` and `Continue` only change `step`, so data persists. Gave up a form per step (it would have to be merged and loses data). Steps read the form through `FormProvider`, and `useTransferField` connects a MUI `TextField` (value handlers, focus ref, error and its message).
 
-**MUI `Dialog`.** Gives the focus trap, `Esc` and focus return; `fullScreen` on small screens gives the mobile sheet. Gave up a dependency-free native `<dialog>`, where focus return and the sheet layout would be hand-written. Be ready to say what MUI does for you and what it doesn't (the stepper and per-step focus are still mine).
+**Each step validates its own fields.** The resolver is chosen from the current step, and `Continue` runs `trigger([...that step's fields], { shouldFocus: true })` before advancing. Fields are also checked on blur, and once a field shows an error it re-checks on every change until fixed (`form.subscribe`). Gave up checking the whole form at once (errors on fields the user hasn't reached).
 
-**Invalidate, not `setQueryData`, after success.** Invalidate customer, accounts and transactions. Simple and always matches the server. Gave up an instant update (about 500 ms of stale view, hidden because the success panel is showing).
+**Fields register in the order they appear.** On a failed `Continue` the form focuses the first invalid field *in registration order*, so the order of `register` calls must match the screen. (A test caught the first version focusing Account number before Recipient name.)
 
-**Stay in the dialog on error.** `onError` only sets error state and never changes `step`, so the review data stays intact (T7).
+**MUI `Dialog`.** Gives the focus trap and `Esc`; `fullScreen` below 1024 px is the mobile sheet. Gave up a dependency-free native `<dialog>`. MUI's styles are injected first (`StyledEngineProvider injectFirst`) so our CSS modules override them. Backdrop clicks are ignored so a stray click doesn't lose typed data. **Focus returns to the opener explicitly** (`returnFocusTo`, applied when the exit animation ends), because Safari doesn't focus a button on click, so MUI would have nothing to restore.
 
-## D. Data model: one validation source (`schema.ts`)
+**Lazy chunk.** The dialog is `React.lazy`, prefetched in the background once the dashboard is up, mounted on first use and then kept mounted (so the exit animation and focus return still run). The main bundle is 377 kB instead of 624 kB; the dialog chunk is 246 kB.
+
+**Saved payees and "someone new" are one native radio group.** The chosen option has a checkmark, and the chosen payee is pinned at the top, under a `Selected` label with `Search results` below, when a later search no longer matches them (found in review: the selection used to vanish while `Continue` stayed enabled, and the first fix looked like a stray result without a label). Arrow keys, Tab and screen readers work without custom code. Bank and from-account are native `<select>`s.
+
+**Invalidate, not `setQueryData`, after success.** Customer, accounts and every transactions query are invalidated, not awaited, so the success screen shows at once while the dashboard refreshes behind it. Gave up an instant update (about 500 ms of old numbers behind the dialog).
+
+**Stay on the review step on error.** The mutation's error never changes `step`, so the review data stays intact (T7). The API's field messages are also set on the form fields, so they show under the fields after `Back`.
+
+## D. Data model: every rule once (`utils/transferSchema.ts`)
 
 ```ts
-// Rules defined ONCE
-const nameRule    = z.string().trim().min(2, '...').max(50, '...')
-const accountRule = z.string().regex(/^\d{8}$/, 'Enter a valid 8-digit account number.')
-const bankRule    = z.string().trim().min(1, 'Choose a bank.')
-const noteRule    = z.string().max(50, 'Note can be at most 50 characters.')
-
-// Balance and limit are runtime context, so the amount rule is a factory
-const makeAmountRule = ({ balance, remaining }: { balance: number; remaining: number }) =>
-  z.number({ message: 'Enter an amount.' })
-    .min(1, 'Amount must be at least SGD 1.00.')
-    .refine(isTwoDecimals, 'Use at most 2 decimal places.')
-    .max(balance,   `Amount can't be more than your available balance (${formatMoney(balance)}).`)
-    .max(remaining, `This transfer exceeds your remaining daily limit (${formatMoney(remaining)}).`)
-
 interface TransferFormValues {
-  recipientMode: 'payee' | 'new'
-  payeeId?: string
-  newRecipient?: { name: string; accountNumber: string; bank: string }
+  recipientChoice: string                    // a payee id, or 'new'
+  newRecipient: { name: string; accountNumber: string; bank: string }
   fromAccountId: string
-  amount: number
-  note?: string
+  amount: string                             // typed text; parsed once, in toRequest
+  note: string
 }
 ```
-Build the resolver per render from the selected account and customer. Use a discriminated union on `recipientMode` so only the relevant recipient fields are validated. The form resets when the dialog closes after success.
 
-Open points: Zod 4 changed error customisation (check its docs, not v3 snippets). Decide which message wins when both balance and limit fail (Zod reports the first failing `.max`; use `superRefine` to choose).
+Rules are defined once (`nameRule`, `accountNumberRule`, `bankRule`, `noteRule`, `choiceRule`, `fromAccountRule`) and composed into one schema per step by `buildStepSchema(step, { balance, remaining })`. Every step schema has every field, with only that step's fields checked, which keeps the form's types simple. The new-recipient rules run only when `'new'` is chosen.
+
+The **amount rule** is one function over the typed text, so the order of checks is explicit: required, valid number (no signs or exponents), at most 2 decimals, at least SGD 1.00, not more than the balance, not more than the remaining limit. Money is compared in whole cents. If both the balance and the limit are exceeded, **the balance message wins**. Messages contain the real figures from the chosen account and customer.
+
+Zod 4 notes: `.trim()` runs before `.min()`; step-level checks use `superRefine`.
 
 ## A. API (specific)
-`POST /api/transfers` takes **either** `payeeId` **or** `recipient`. One function, `toRequest(values)`, maps `TransferFormValues` to `CreateTransferRequest` so the either/or rule lives in one place (omit an empty note). Map `ApiError.fields` onto the form (`recipient.name` becomes `newRecipient.name`), show `ApiError.message` in the alert, and for any 500 show the brief's text: `Something went wrong. Your money hasn't left your account. Try again.`
+`POST /api/transfers` takes **either** `payeeId` **or** `recipient`. `toRequest(values)` is the one place that decides which (and omits an empty note); `toFormErrors(fields)` maps API field names onto form field names (`recipient.name` becomes `newRecipient.name`). 400/422 errors show the API's message in the alert; any 500 (or an unknown error) shows the brief's text: `Something went wrong. Your money hasn't left your account. Try again.`
 
 ## O. Optimizations (specific)
-- **No double submit:** disable `Confirm transfer` while pending (label `Sending…`) and also guard in the handler.
+- **Continue is soft-disabled until the step is valid:** `aria-disabled` plus dimmed styling, still focusable and pressable. The step's validity is the same schema, run silently on every change (`useWatch`). Pressing it early shows the errors and focuses the first invalid field, which the brief requires and a real `disabled` button can't do.
+- **No double submit:** `Confirm transfer` is disabled while pending (label `Sending…`), and the handler also returns early, because a disabled button alone doesn't stop a fast double click.
 - **Not optimistic:** money moves, so the UI never claims success first.
-- **Validation timing:** `mode: 'onBlur'`, `reValidateMode: 'onChange'`. On `Continue`, run `trigger` and focus the first invalid field.
-- **a11y (T8):** labels on every input, `aria-describedby` + `aria-invalid` on errors, payee list as a `radiogroup` with arrow keys, `role="alert"` on the send error, `aria-live="polite"` on success, `aria-current="step"` in the stepper, `inputMode="decimal"` on mobile.
-- **Focus:** into the dialog on open, back to the opener on close, to the step heading on step change.
-- **Edge cases:** `"12.345"`, `"1e3"`, a name of only spaces, empty note, credit account never offered.
-- **Optional if time:** `Discard this transfer?` on a dirty form.
+- **a11y (T8):** a label on every input; `aria-describedby` and `aria-invalid` on errors (MUI links the helper text); the payees are a `radiogroup` labelled by the step heading; `role="alert"` on the send error; `aria-live="polite"` on success; `aria-current="step"` in the stepper; `inputMode="decimal"` and `numeric` on mobile.
+- **Focus:** into the dialog on open and onto each step's heading when the step changes (so it is announced); back to the opener on close; to the first invalid field on a failed `Continue`.
+- **Verified in Chrome:** the dialog is 520 px wide and centred on desktop and a full-screen sheet on a 390 px phone; no control under 44 px; dark mode follows the tokens; the footer stays at the bottom of the sheet.
+- **Messages:** every visible validation message is our own wording. An unchecked radio group gives `null` (not `''`), so required choices use `z.string({ error })` and the fields a step doesn't check use `.catch('')`; a test sweeps every field with `null` and `undefined` and fails if the library's "Invalid input: expected string, received null" ever appears.
+- **Edge cases covered by tests:** `12.345`, `1e3`, `-5`, `0.99`, a name of only spaces, 7- and 9-digit account numbers, a 51-character note, an empty note, the credit card never offered.
+- **Not built (optional in the brief):** `Discard this transfer?` on a dirty form.
 
 ---
 
