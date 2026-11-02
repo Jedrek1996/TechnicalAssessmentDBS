@@ -1,0 +1,62 @@
+/* Fixed height (a shared variable), so the loading skeleton can match it exactly. */
+.row {
+  align-items: center;
+  display: flex;
+  gap: var(--space-4);
+  height: var(--transaction-row-height);
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+}
+
+.row:not(:first-child) {
+  border-top: 1px solid var(--border);
+}
+
+.details {
+  min-width: 0;
+}
+
+.details p,
+.end p {
+  margin: 0;
+}
+
+.description {
+  font-weight: var(--weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  text-transform: capitalize;
+}
+
+.end {
+  align-items: flex-end;
+  display: grid;
+  flex-shrink: 0;
+  gap: var(--space-1);
+  justify-items: end;
+}
+
+.amount,
+.amountIn {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-semibold);
+}
+
+.amountIn {
+  color: var(--positive);
+}
+
+.pending {
+  background: var(--warning-soft);
+  border-radius: var(--radius-full);
+  color: var(--warning);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  padding: 0 var(--space-2);
+}

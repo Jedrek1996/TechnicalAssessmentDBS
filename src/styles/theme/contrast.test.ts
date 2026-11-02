@@ -1,11 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import tokensCss from '../../../brief/design-tokens.css?raw'
 
-/**
- * TH3: text contrast meets WCAG AA in all four theme + segment combinations.
- * Reads the real design-tokens.css, applies its cascade
- * (base < segment < dark < dark+segment) and checks the pairs the UI uses.
- */
+// WCAG AA text contrast for every theme + segment combination, read from the real design-tokens.css.
 type Tokens = Record<string, string>
 
 function parseBlocks(css: string): Map<string, Tokens> {
@@ -65,6 +61,7 @@ const PAIRS: [string, string, string][] = [
   ['--on-hero', '--hero-from', 'balance hero (gradient start)'],
   ['--on-hero', '--hero-to', 'balance hero (gradient end)'],
   ['--positive', '--surface', 'money in'],
+  ['--warning', '--warning-soft', 'pending chip'],
   ['--negative', '--surface', 'errors'],
   ['--negative', '--surface-raised', 'errors in the dialog'],
 ]
