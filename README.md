@@ -1,11 +1,11 @@
-# Meridian Banking — Jedrek Koh
+# 🏦 Meridian Banking — Jedrek Koh
 
-- Deployed: https://meridianbankassignmentjed.netlify.app/
-- Run locally: `npm install && npm run dev` (http://localhost:5173). Node 22 (see `.nvmrc`).
+- 🚀 Deployed: https://meridianbankassignmentjed.netlify.app/
+- 💻 Run locally: `npm install && npm run dev` (http://localhost:5173). Node 22 (see `.nvmrc`).
 
 A small banking app for one customer, Ava Chen: a dashboard of her accounts and recent transactions, and a three-step transfer. The brief is in [`brief/candidate-brief.md`](brief/candidate-brief.md).
 
-**Try it in two minutes**
+**⏱️ Try it in two minutes**
 
 1. Reload to see the loading skeleton, then toggle light/dark and Retail/Premium (they survive a reload).
 2. Search the transactions (`groceries`, `zzz`), and collapse Accounts and Recent transactions.
@@ -13,22 +13,22 @@ A small banking app for one customer, Ava Chen: a dashboard of her accounts and 
 4. Put `#fail` in the note and confirm to see the send-failure state.
 5. Resize to a phone (the page works from 320px): the `New transfer` button is fixed to the bottom.
 
-## Requirements coverage
+## ✅ Requirements coverage
 
 Everything required in the brief is built and deployed. The full matrix (each requirement ID, where it lives, and how it was checked) is in [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md).
 
 | Area | Requirements | Status |
 | --- | --- | --- |
-| Dashboard | D1-D8: parallel loading and skeleton, header, total, accounts, transactions, search, error + Retry, mobile layout | Done |
-| Transfer | T1-T8: dialog, three steps, send, refresh, failure, accessibility | Done |
-| Validation | §3.3: every rule defined once, real figures in the messages | Done |
-| Themes | TH1-TH3: light/dark, Retail/Premium, accessible | Done |
-| Engineering | E1 types, E2 server data, E3 forms, E5 `check` + `build` | Done |
-| Tests | E4: the three required behaviour tests (plus 185 more) | Done |
-| Deployment | E6: public URL (Netlify), static files with the mock API in the browser | Done |
-| Optional | Daily-limit progress bar | Done. The others (discard prompt, debug menu, balance-hide, third segment, `#transfer` link, end-to-end test, CI) are not built |
+| Dashboard | D1-D8: parallel loading and skeleton, header, total, accounts, transactions, search, error + Retry, mobile layout | ✅ Done |
+| Transfer | T1-T8: dialog, three steps, send, refresh, failure, accessibility | ✅ Done |
+| Validation | §3.3: every rule defined once, real figures in the messages | ✅ Done |
+| Themes | TH1-TH3: light/dark, Retail/Premium, accessible | ✅ Done |
+| Engineering | E1 types, E2 server data, E3 forms, E5 `check` + `build` | ✅ Done |
+| Tests | E4: the three required behaviour tests (plus 185 more) | ✅ Done |
+| Deployment | E6: public URL (Netlify), static files with the mock API in the browser | ✅ Done |
+| Optional | Daily-limit progress bar | ✅ Done. The others (discard prompt, debug menu, balance-hide, third segment, `#transfer` link, end-to-end test, CI) are not built |
 
-## Commands
+## ⌨️ Commands
 
 ```bash
 npm run dev         # start the app
@@ -36,7 +36,7 @@ npm run check       # lint + typecheck + tests
 npm run build       # production build into dist/
 ```
 
-## Project structure
+## 🗂️ Project structure
 
 Organised by layer, one folder per kind of file. Tests sit next to the code they test.
 
@@ -79,7 +79,7 @@ public/
 
 Not edited from the starter: `mock-api/` and `src/mocks/`. The only change to `src/test/setup.ts` is adding RTL `cleanup()`, because Vitest has no globals here and renders were leaking between tests.
 
-## Decisions and trade-offs
+## 🧭 Decisions and trade-offs
 
 ### Data and state
 
@@ -107,16 +107,16 @@ Not edited from the starter: `mock-api/` and `src/mocks/`. The only change to `s
 - **One grid, three layouts.** `Dashboard` lays its sections out on one CSS grid: the daily limit sits under the total on phones, beside it on tablets, and in the right column from 1024px. The loading skeleton uses the same grid and was checked against the real page at 390, 700, 1000 and 1280px, so nothing moves when data arrives.
 - **Accounts and Recent transactions can be collapsed.** A toggle beside each heading swaps the content for a summary card (so a collapsed section is never empty), animating smoothly between the two heights; search text survives a collapse.
 
-### Performance
+### ⚡ Performance
 
 - **The transfer dialog is a lazy chunk.** MUI is only used there, so its theme and styling engine live in that chunk too. It is prefetched in the background once the dashboard is up, and mounts on first use. The first load is **285 kB (89 kB gzipped)** instead of about 628 kB with everything in one file.
 - **No `useMemo`, `useCallback` or `React.memo`, on purpose.** I measured before adding any: rebuilding the validation schema each keystroke takes 0.04-0.09 ms; typing in the search re-renders only the list, under 1 ms a letter; choosing a payee or typing in the form doesn't re-render the dashboard behind it; the form costs about 3 ms a keystroke in jsdom (less in a browser), well under a 16 ms frame. The only avoidable re-render is one when the dialog opens (about 4 ms in jsdom), not worth the extra code.
 
-### Visual polish
+### ✨ Visual polish
 
 The brief doesn't ask for it, so every addition follows the same rules as the rest: no new colours (shades are `color-mix` of the existing tokens, so they follow Retail/Premium and light/dark), nothing that shifts the layout, and nothing that ignores reduced motion. It includes category icons on transactions, account icons tinted by meaning, a date line, a `% used` bar on the daily limit, an animated gradient on the balance card, a soft brand wash behind the page, a frosted header that stays in view from 640px, sections that fade in, a sliding Retail/Premium pill, and hover and press feedback. Text over the new backgrounds was measured pixel by pixel in all four theme combinations (worst case 5.13:1 on the balance card and 5.73:1 on the page, against 4.5:1). The fade-in is opacity only: a transform would make the wrapper the containing block of the fixed `New transfer` button.
 
-## Loading, empty and error states
+## 🔄 Loading, empty and error states
 
 | State | What the user sees | How to see it |
 | --- | --- | --- |
@@ -132,7 +132,7 @@ The brief doesn't ask for it, so every addition follows the same rules as the re
 | Send failed | An alert: `Something went wrong. Your money hasn't left your account. Try again.` Stays on the review step | Put `#fail` in the note (the API's documented test hook) and confirm |
 | Success | `Transfer sent`, the amount, the recipient and the reference | Confirm a transfer |
 
-## Tests
+## 🧪 Tests
 
 `npm test` runs 188 tests.
 
@@ -153,7 +153,7 @@ The brief doesn't ask for it, so every addition follows the same rules as the re
 
 All three required tests are covered: **an amount over the balance shows the error and sends no request** (asserts zero POSTs), **a successful transfer shows the success screen and the dashboard updates** (new balance, transaction and remaining limit), and **a failed dashboard request shows the error and `Retry` loads it**.
 
-## AI use
+## 🤖 AI use
 
 Tool: Claude Code, for planning, writing code and tests, and checking the result in a real browser.
 
@@ -167,14 +167,14 @@ Places I changed or corrected what it produced:
 6. **A flaky test the AI introduced.** After the dialog was lazy-loaded, one transfer test failed intermittently when the machine was busy: the first open had to load a large chunk and the test only waited the default second. I reproduced it by running two suites at once, then fixed it by preloading the dialog before the tests and waiting longer for the first open.
 7. **Unneeded optimisation.** I asked whether to add `useMemo`, `useCallback` and `React.memo`. Instead of adding them, we measured, found nothing slow, and only changed the one thing that mattered (moving the MUI theme into the lazy chunk, which cut the first load by 95 kB).
 
-## Not done / known issues
+## 🚧 Not done / known issues
 
 - There is no debug menu to trigger the dashboard error state in the deployed app (optional in the brief); the error state is covered by a test.
 - Closing the dialog while a transfer is sending doesn't cancel it: the request completes and the dashboard still refreshes.
 - The other optional extras are not built: `Discard this transfer?`, a `#transfer` link, an end-to-end test, CI, a balance-hide toggle, a third segment.
 - `<meta name="theme-color">` in `index.html` is a fixed light colour, so mobile browser chrome doesn't follow dark mode.
 
-## More documentation
+## 📚 More documentation
 
 - [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md): every requirement ID with where it lives and how it was checked.
 - [`docs/SYSTEM_DESIGN.md`](docs/SYSTEM_DESIGN.md): the design walked through requirements, architecture, data, API and optimisations, with the trade-off for each choice.
