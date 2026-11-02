@@ -1,0 +1,23 @@
+.toggle {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  height: var(--tap-target);
+  justify-content: center;
+  transition: background var(--duration-fast) var(--ease-out);
+  width: var(--tap-target);
+}
+
+.toggle:hover {
+  background: var(--surface-muted);
+}
+
+.toggle[aria-pressed='true'] {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
+}
