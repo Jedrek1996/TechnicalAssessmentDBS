@@ -1,12 +1,5 @@
-/**
- * The palette: every design token from brief/design-tokens.css, grouped and
- * typed. Values are `var(--…)` strings, never hex, so anything built from this
- * follows `data-theme` / `data-segment` on <html> automatically.
- *
- * Use this (not string literals) in `sx`, inline styles and the MUI theme, so a
- * typo is a compile error and there is one place to see what exists.
- * Plain CSS files can keep using `var(--…)` directly.
- */
+// Every design token as a typed `var(--token)` string, never hex, so anything
+// built from it follows data-theme / data-segment. Plain CSS can use var(--…) directly.
 const v = <T extends string>(name: T) => `var(--${name})` as const
 
 export const palette = {
@@ -56,7 +49,6 @@ export const palette = {
   },
 } as const
 
-/** Non-colour tokens, same idea. */
 export const scale = {
   font: { sans: v('font-sans'), mono: v('font-mono') },
   radius: {

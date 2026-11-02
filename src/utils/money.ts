@@ -1,12 +1,8 @@
 import type { Account, Customer } from '../api/types'
 
-/**
- * Money is summed in whole cents so 0.1 + 0.2 is exactly 0.30, not
- * 0.30000000000000004. Display still goes through `formatMoney`.
- */
+// Summed in whole cents so 0.1 + 0.2 is exactly 0.3.
 const toCents = (amount: number) => Math.round(amount * 100)
 
-/** Checking and savings. The credit card is money owed, not available. */
 export const isDepositAccount = (account: Account) => account.type !== 'credit'
 
 export function totalAvailable(accounts: Account[]): number {

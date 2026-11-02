@@ -1,7 +1,3 @@
-/*
- * Mobile (< 640px): two rows. Logo + controls, then the Retail/Premium switch.
- * 640px+: one row. 1024px+: the nav appears.
- */
 .header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);

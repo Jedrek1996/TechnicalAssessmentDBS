@@ -8,13 +8,9 @@ import type { Segment, ThemeMode } from '../constants/theme'
 import { persist } from '../utils/storage'
 import { isSegment, isThemeMode } from '../utils/theme'
 
-/**
- * The source of truth is the `data-theme` / `data-segment` attributes on
- * <html>: the CSS tokens read them directly, so restyling needs no React
- * re-render. This module is the only place that writes them. It also lets React
- * subscribe (via useSyncExternalStore) so controls like `aria-pressed` stay in
- * sync.
- */
+// The data-theme / data-segment attributes on <html> are the source of truth (the
+// CSS tokens read them directly). Only this module writes them; React subscribes
+// through useSyncExternalStore so `aria-pressed` stays in sync.
 const listeners = new Set<() => void>()
 const root = () => document.documentElement
 

@@ -1,7 +1,7 @@
 import { useTheme } from '../../../hooks/useTheme'
 import styles from '../../../styles/components/theme/ThemeToggle.module.css'
 
-/** Light/dark switch. The name stays "Dark mode"; `aria-pressed` carries the state. */
+// The name stays "Dark mode"; `aria-pressed` carries the state.
 export function ThemeToggle() {
   const { mode, toggleMode } = useTheme()
 

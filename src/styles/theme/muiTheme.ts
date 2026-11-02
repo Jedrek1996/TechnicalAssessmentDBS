@@ -10,13 +10,9 @@ declare module '@mui/material/styles' {
 }
 
 /**
- * MUI only ever sees CSS variables (see tokens.ts), so switching `data-theme` /
- * `data-segment` on <html> restyles it with no React state.
- *
- * - `cssVariables: true` is required: without it MUI runs colour maths
- *   (`alpha`) on `var(--brand)` and throws.
- * - Every palette slot is set, including ones the app doesn't use, so MUI's
- *   hard-coded defaults (#1976d2, greys, rgba(0,0,0,…)) can't leak in.
+ * `cssVariables: { nativeColor: true }` is required: without it MUI does colour
+ * maths (`alpha`) on `var(--brand)` and throws. Every palette slot is set, even
+ * unused ones, so MUI's hard-coded defaults can't leak in.
  */
 const ramp = (c: { main: string; light: string; dark: string; on: string }) => ({
   main: c.main,

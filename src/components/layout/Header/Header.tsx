@@ -46,7 +46,6 @@ export function Header({ initials }: HeaderProps) {
               {initials}
             </span>
           ) : (
-            // Same size as the avatar, so the header doesn't shift when it loads.
             <span className={styles.avatarPlaceholder} aria-hidden="true" />
           )}
         </div>

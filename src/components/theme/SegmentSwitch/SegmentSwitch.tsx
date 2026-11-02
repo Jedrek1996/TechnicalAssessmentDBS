@@ -7,7 +7,7 @@ const OPTIONS: { value: Segment; label: string }[] = [
   { value: 'premium', label: 'Premium' },
 ]
 
-/** Retail | Premium. Only changes the brand colour; there is no API call. */
+// Only changes the brand colour; there is no API call.
 export function SegmentSwitch() {
   const { segment, setSegment } = useTheme()
 

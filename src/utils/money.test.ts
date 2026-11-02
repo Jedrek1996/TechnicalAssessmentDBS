@@ -15,7 +15,6 @@ const account = (type: Account['type'], balance: number): Account => ({
   currency: 'SGD',
 })
 
-// The seed data from the brief.
 const ava = [
   account('checking', 4280.55),
   account('savings', 12840),

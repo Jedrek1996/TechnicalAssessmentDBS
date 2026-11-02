@@ -1,6 +1,5 @@
 import type { Customer } from '../api/types'
 
-/** `Ava Chen` -> `AC` */
 export function customerInitials(
   customer: Pick<Customer, 'firstName' | 'lastName'>,
 ): string {

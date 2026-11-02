@@ -7,10 +7,9 @@ import type {
   TransactionsResponse,
 } from './types'
 
-/** The dashboard shows the 8 newest transactions. */
 export const RECENT_TRANSACTIONS_LIMIT = 8
 
-/** Every query key in one place, so invalidating after a transfer can't miss one. */
+// Every query key in one place, so invalidating after a transfer can't miss one.
 export const queryKeys = {
   customer: ['customer'] as const,
   accounts: ['accounts'] as const,
