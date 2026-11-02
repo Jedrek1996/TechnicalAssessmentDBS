@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { SEND_ERROR_MESSAGE } from '../../constants/transfer'
 import { DashboardPage } from '../../pages/DashboardPage'
 import { renderWithClient } from '../../test/render'
@@ -12,10 +12,14 @@ type User = ReturnType<typeof userEvent.setup>
 // The mock API answers after about 500 ms, and these flows make several requests.
 const SLOW = { timeout: 5000 }
 
+// The dialog is a lazy chunk. Load it once up front so the first test doesn't pay for it
+// (it is large, and under load that took longer than the default wait).
+beforeAll(() => import('./TransferDialog'))
+
 async function openDialog(user: User) {
   renderWithClient(<DashboardPage />)
   await user.click(await screen.findByRole('button', { name: 'New transfer' }, SLOW))
-  return screen.findByRole('dialog', { name: 'New transfer' })
+  return screen.findByRole('dialog', { name: 'New transfer' }, SLOW)
 }
 
 const choosePayee = async (user: User, name: string) =>

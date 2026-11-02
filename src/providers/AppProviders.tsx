@@ -1,8 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { muiTheme } from '../styles/theme/muiTheme'
 
 export function AppProviders({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -12,12 +10,5 @@ export function AppProviders({ children }: { children: ReactNode }) {
       }),
   )
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {/* MUI's styles go first, so our CSS modules override them instead of losing ties. */}
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={muiTheme}>{children}</ThemeProvider>
-      </StyledEngineProvider>
-    </QueryClientProvider>
-  )
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
