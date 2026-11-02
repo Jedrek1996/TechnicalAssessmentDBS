@@ -5,7 +5,7 @@ import { Button } from '../../../common/Button'
 interface BalanceHeroProps {
   total: number
   depositCount: number
-  onNewTransfer: () => void
+  onNewTransfer: (trigger: HTMLElement) => void
 }
 
 export function BalanceHero({
@@ -24,7 +24,10 @@ export function BalanceHero({
           Across {depositCount} {noun}
         </p>
       </div>
-      <Button className={styles.transfer} onClick={onNewTransfer}>
+      <Button
+        className={styles.transfer}
+        onClick={(event) => onNewTransfer(event.currentTarget)}
+      >
         <span aria-hidden="true">+</span>
         New transfer
       </Button>

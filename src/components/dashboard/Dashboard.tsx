@@ -12,7 +12,7 @@ interface DashboardProps {
   customer: Customer
   accounts: Account[]
   transactions: Transaction[]
-  onNewTransfer: () => void
+  onNewTransfer: (trigger: HTMLElement) => void
 }
 
 export function Dashboard({

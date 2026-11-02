@@ -5,20 +5,29 @@ interface SearchInputProps {
   value: string
   onChange: (value: string) => void
   onClear: () => void
+  label?: string
+  fullWidth?: boolean
   ref?: Ref<HTMLInputElement>
 }
 
-export function SearchInput({ value, onChange, onClear, ref }: SearchInputProps) {
+export function SearchInput({
+  value,
+  onChange,
+  onClear,
+  label = 'Search transactions',
+  fullWidth = false,
+  ref,
+}: SearchInputProps) {
   return (
-    <div className={styles.wrap}>
+    <div className={fullWidth ? `${styles.wrap} ${styles.full}` : styles.wrap}>
       <input
         ref={ref}
         type="search"
         className={styles.input}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        aria-label="Search transactions"
-        placeholder="Search transactions"
+        aria-label={label}
+        placeholder={label}
       />
       {value && (
         <button

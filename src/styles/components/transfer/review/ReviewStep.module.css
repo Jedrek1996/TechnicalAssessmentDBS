@@ -1,0 +1,16 @@
+.info {
+  background: var(--surface-muted);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+}
+
+.alert {
+  background: var(--negative-soft);
+  border: 1px solid var(--negative);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+}

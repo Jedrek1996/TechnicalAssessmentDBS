@@ -1,0 +1,35 @@
+.list {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+}
+
+.row + .row {
+  border-top: 1px solid var(--border);
+}
+
+.row dt {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.row dd {
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.total {
+  border-top: 1px solid var(--border-strong) !important;
+  font-weight: var(--weight-bold);
+}
+
+.total dt {
+  color: var(--text);
+}

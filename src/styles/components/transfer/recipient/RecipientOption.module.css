@@ -1,0 +1,84 @@
+.option {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  gap: var(--space-3);
+  min-height: var(--tap-target);
+  padding: var(--space-3) var(--space-4);
+  position: relative;
+}
+
+.option:hover {
+  background: var(--surface-muted);
+}
+
+.option:has(.radio:checked) {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+}
+
+.option:has(.radio:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.radio {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.avatar {
+  align-items: center;
+  background: var(--brand-soft);
+  border-radius: var(--radius-full);
+  color: var(--brand);
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  height: 2.5rem;
+  justify-content: center;
+  width: 2.5rem;
+}
+
+.option:has(.radio:checked) .avatar {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+.text {
+  display: grid;
+  min-width: 0;
+}
+
+.title {
+  font-weight: var(--weight-semibold);
+}
+
+.detail {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* A checkmark on the chosen option, so the selection is clear without relying on colour. */
+.check {
+  align-items: center;
+  background: var(--brand);
+  border-radius: var(--radius-full);
+  color: var(--on-brand);
+  display: none;
+  flex-shrink: 0;
+  height: 1.5rem;
+  justify-content: center;
+  margin-left: auto;
+  width: 1.5rem;
+}
+
+.option:has(.radio:checked) .check {
+  display: inline-flex;
+}
