@@ -7,5 +7,4 @@ coverage/
 .env
 .env.*
 
-# Personal notes for explaining the project to reviewers (not for submission)
 docs/private/
