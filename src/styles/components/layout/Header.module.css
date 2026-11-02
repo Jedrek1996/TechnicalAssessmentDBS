@@ -1,0 +1,116 @@
+/*
+ * Mobile (< 640px): two rows. Logo + controls, then the Retail/Premium switch.
+ * 640px+: one row. 1024px+: the nav appears.
+ */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.inner {
+  align-items: center;
+  display: grid;
+  gap: var(--space-3) var(--space-4);
+  grid-template-areas:
+    'brand controls'
+    'segment segment';
+  grid-template-columns: 1fr auto;
+  margin: 0 auto;
+  max-width: var(--container);
+  min-height: var(--header-height);
+  padding: var(--space-3) var(--gutter-mobile);
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  gap: var(--space-2);
+  grid-area: brand;
+}
+
+.logo {
+  align-items: center;
+  background: var(--brand);
+  border-radius: var(--radius-sm);
+  color: var(--on-brand);
+  display: inline-flex;
+  font-weight: var(--weight-bold);
+  height: var(--space-8);
+  justify-content: center;
+  width: var(--space-8);
+}
+
+.name {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.nav {
+  display: none;
+  grid-area: nav;
+  gap: var(--space-2);
+}
+
+.current,
+.disabled {
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  padding: var(--space-2) var(--space-3);
+}
+
+.current {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.disabled {
+  background: transparent;
+  border: 0;
+  color: var(--text-subtle);
+  cursor: not-allowed;
+}
+
+.segment {
+  grid-area: segment;
+}
+
+.controls {
+  align-items: center;
+  display: flex;
+  gap: var(--space-3);
+  grid-area: controls;
+}
+
+.avatar {
+  align-items: center;
+  background: var(--brand-soft);
+  border-radius: var(--radius-full);
+  color: var(--brand);
+  display: inline-flex;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  height: var(--tap-target);
+  justify-content: center;
+  width: var(--tap-target);
+}
+
+@media (min-width: 640px) {
+  .inner {
+    grid-template-areas: 'brand segment controls';
+    grid-template-columns: 1fr auto auto;
+    padding-inline: var(--gutter);
+  }
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    grid-template-areas: 'brand nav segment controls';
+    grid-template-columns: auto 1fr auto auto;
+  }
+
+  .nav {
+    display: flex;
+  }
+}
